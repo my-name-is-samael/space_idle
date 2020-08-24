@@ -24,7 +24,7 @@ class PlanetManager {
     }
 
     getBasePlanetSize() {
-        return height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
+        return height * this.planets[CONFIG.PLANETS.ID_SUN].base_size;
     }
 
     initPlanets() {
@@ -89,8 +89,7 @@ class PlanetManager {
     }
 
     drawPlanet(planet) {
-        const base_size =
-            height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
+        const base_size = this.getBasePlanetSize();
         const img = this.img_planets[planet.id];
         const h = base_size * planet.size_ratio;
         const w = img.width == img.height ? h : h * (img.width / img.height);

@@ -37,8 +37,7 @@ class GameManager {
     }
 
     updateDisplay() {
-        const canvasSize = min(windowWidth, windowHeight);
-        resizeCanvas(canvasSize, canvasSize);
+        resizeCanvas(windowWidth, windowHeight);
     }
 
     draw() {
@@ -79,7 +78,14 @@ class GameManager {
 
     scroll(isUp) {
         const step = 0.05;
-        this.scale += isUp ? step : -step;
+        this.scale = parseFloat(
+            (this.scale + (isUp ? step : -step)).toFixed(2)
+        );
+    }
+
+    keyPressed(idPlanet) {
+        this.planet_manager.idCurrentPlanet = idPlanet;
+        this.scale = this.planet_manager.getCurrentPlanet().scale;
     }
 }
 const game_manager = new GameManager();
@@ -108,4 +114,15 @@ function mouseClicked() {
 
 function mouseWheel(event) {
     game_manager.scroll(event.delta < 0);
+}
+
+function keyPressed() {
+    // keys 0 to 9
+    if (keyCode >= 48 && keyCode <= 57) {// 48 -> 57
+        // place sun (48) at the end
+        keyCode += keyCode == 48 ? 10 : 0;// 49 -> 58
+        keyCode = keyCode - 49;// 0 -> 9
+        keyCode = 9 - keyCode;// 9 -> 0 (invert)
+        game_manager.keyPressed(keyCode);
+    }
 }
