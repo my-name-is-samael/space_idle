@@ -59,15 +59,20 @@ class GameManager {
     centerOnPlanet() {
         translate(width / 2, height / 2);
         scale(this.scale, this.scale);
+        if (height > width) {
+            rotate(90);
+        }
     }
 
     drawDate() {
-        textSize(height / 20);
-        textAlign(LEFT, TOP);
         const currentPlanet = this.planet_manager.getCurrentPlanet();
-        const percent = parseInt(map(currentPlanet.angle, 0, 360, 0, 100));
-        text(`Année ${currentPlanet.year} : ${percent}%`, 5, 5);
-        textAlign(CENTER, CENTER);
+        if (currentPlanet.id != CONFIG.PLANETS.ID_SUN) {
+            textSize(height / 20);
+            textAlign(LEFT, TOP);
+            const percent = parseInt(map(currentPlanet.angle, 0, 360, 0, 100));
+            text(`Année ${currentPlanet.year} : ${percent}%`, 5, 5);
+            textAlign(CENTER, CENTER);
+        }
     }
 
     click(x, y) {
@@ -118,11 +123,12 @@ function mouseWheel(event) {
 
 function keyPressed() {
     // keys 0 to 9
-    if (keyCode >= 48 && keyCode <= 57) {// 48 -> 57
+    if (keyCode >= 48 && keyCode <= 57) {
+        // 48 -> 57
         // place sun (48) at the end
-        keyCode += keyCode == 48 ? 10 : 0;// 49 -> 58
-        keyCode = keyCode - 49;// 0 -> 9
-        keyCode = 9 - keyCode;// 9 -> 0 (invert)
+        keyCode += keyCode == 48 ? 10 : 0; // 49 -> 58
+        keyCode = keyCode - 49; // 0 -> 9
+        keyCode = 9 - keyCode; // 9 -> 0 (invert)
         game_manager.keyPressed(keyCode);
     }
 }

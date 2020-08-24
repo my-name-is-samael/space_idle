@@ -133,6 +133,9 @@ class PlanetManager {
         // vec is position of cursor, then we apply planet transformation
         const vec = createVector(x - width / 2, y - height / 2);
         const currentPlanet = this.getCurrentPlanet();
+        if (height > width) {
+            vec.rotate(-90);
+        }
         vec.rotate(currentPlanet.angle);
         const scale = 1 / game_manager.scale;
         vec.mult(scale);
