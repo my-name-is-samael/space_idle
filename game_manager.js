@@ -1,6 +1,5 @@
 class GameManager {
     constructor() {
-        this.id_scale = 0;
         this.gap;
         this.tf;
         this.year = 1;
@@ -14,6 +13,7 @@ class GameManager {
             this.planet_manager.loadPlanetsAssets(planets_data);
             this.planet_manager.initPlanets();
             this.planet_manager.loaded = true;
+            this.scale = this.planet_manager.getCurrentPlanet().scale;
         });
     }
 
@@ -26,8 +26,11 @@ class GameManager {
         this.gap = width * CONFIG.PLANETS.GAP_RATIO;
 
         this.tf = new Transformer();
-        this.planet_manager = new PlanetManager(this.tf, this.gap);
-
+        this.planet_manager = new PlanetManager(
+            this.tf,
+            this.gap,
+            CONFIG.PLANETS.ID_SUN
+        );
 
         angleMode(DEGREES);
         textAlign(CENTER, CENTER);
@@ -47,68 +50,36 @@ class GameManager {
             text("Chargement...", width / 2, height / 2);
         } else {
             push();
-            this.centerOnEarth();
-            this.planet_manager.updateAndDrawPlanets((planet, planets) => {
-                if (planet.id == CONFIG.PLANETS.ID_EARTH) {
-                    // neighbor detection (zoom out to next pair of planets)
-                    const range = this.id_scale + 1;
-                    const minIndex = max(0, CONFIG.PLANETS.ID_EARTH - range);
-                    const minReached = minIndex == 0;
-                    const maxIndex = min(
-                        CONFIG.PLANETS.ID_EARTH + range,
-                        planets.length - 1
-                    );
-                    const maxReached = maxIndex == planets.length - 1;
-
-                    const planetsToCheck = [];
-                    if (!minReached) {
-                        planetsToCheck.push(planets[minIndex]);
-                    }
-                    if (!maxReached) {
-                        planetsToCheck.push(planets[maxIndex]);
-                    }
-
-                    let stepReached = false;
-                    planetsToCheck.forEach((target) => {
-                        if (!stepReached) {
-                            const distance = dist(
-                                planet.pos.x,
-                                planet.pos.y,
-                                target.pos.x,
-                                target.pos.y
-                            );
-                            const range = abs(
-                                planet.distance - target.distance
-                            );
-                            if (distance < range * CONFIG.PLANETS.DETECTION_RANGE) {
-                                stepReached = true;
-                            }
-                        }
-                    });
-                    if (stepReached) {
-                        this.id_scale++;
-                    }
-                }
-            });
+            this.centerOnPlanet();
+            this.planet_manager.updateAndDrawPlanets();
             pop();
             this.drawDate();
         }
     }
 
-    centerOnEarth() {
+    centerOnPlanet() {
         translate(width / 2, height / 2);
-        const scaleV = CONFIG.SCALES[this.id_scale];
-        scale(scaleV, scaleV);
+        scale(this.scale, this.scale);
     }
 
     drawDate() {
         textSize(height / 20);
         textAlign(LEFT, TOP);
-        const day = parseInt(
-            map(this.planet_manager.planets[CONFIG.PLANETS.ID_EARTH].angle, 0, 360, 1, 366)
-        );
-        text(`Année ${this.year} Jour ${day}`, 5, 5);
+        const currentPlanet = this.planet_manager.getCurrentPlanet();
+        const percent = parseInt(map(currentPlanet.angle, 0, 360, 0, 100));
+        text(`Année ${currentPlanet.year} : ${percent}%`, 5, 5);
         textAlign(CENTER, CENTER);
+    }
+
+    click(x, y) {
+        this.planet_manager.click(x, y, (planet) => {
+            this.scale = planet.scale;
+        });
+    }
+
+    scroll(isUp) {
+        const step = 0.05;
+        this.scale += isUp ? step : -step;
     }
 }
 const game_manager = new GameManager();
@@ -127,4 +98,14 @@ function windowResized() {
 
 function draw() {
     game_manager.draw();
+}
+
+function mouseClicked() {
+    if (mouseX > 0 && mouseX <= width && mouseY > 0 && mouseY <= height) {
+        game_manager.click(mouseX, mouseY);
+    }
+}
+
+function mouseWheel(event) {
+    game_manager.scroll(event.delta < 0);
 }

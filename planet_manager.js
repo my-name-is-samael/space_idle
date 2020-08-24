@@ -1,10 +1,16 @@
 class PlanetManager {
-    constructor(tf, gap) {
+    constructor(tf, gap, idPlanet) {
         this.planets = [];
         this.img_planets = [];
         this.loaded = false;
         this.tf = tf;
         this.gap = gap;
+
+        this.idCurrentPlanet = idPlanet;
+    }
+
+    getCurrentPlanet() {
+        return this.planets[this.idCurrentPlanet];
     }
 
     loadPlanetsAssets(data) {
@@ -17,16 +23,21 @@ class PlanetManager {
         });
     }
 
+    getBasePlanetSize() {
+        return height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
+    }
+
     initPlanets() {
         let distance = 0;
-        const base_size =
-            height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
+        const base_size = this.getBasePlanetSize();
         // init planets at differents starting angles, imcrementing distance
         this.planets.forEach((planet) => {
             const planet_radius = (base_size * planet.size_ratio) / 2;
             if (planet.id != CONFIG.PLANETS.ID_SUN) {
                 distance += planet_radius;
                 planet.angle = parseFloat(random(0, 360).toFixed(2));
+            } else {
+                planet.angle = 0;
             }
             // adding distance from sun
             planet.distance = distance;
@@ -72,15 +83,18 @@ class PlanetManager {
             this.updatePlanetPos(planet);
         }
 
-        updateCallback(planet, this.planets);
+        if (!!updateCallback) {
+            updateCallback(planet, this.planets);
+        }
     }
 
     drawPlanet(planet) {
-        const base_size = height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
+        const base_size =
+            height * this.planets[CONFIG.PLANETS.ID_EARTH].base_size;
         const img = this.img_planets[planet.id];
         const h = base_size * planet.size_ratio;
         const w = img.width == img.height ? h : h * (img.width / img.height);
-        const earth = this.planets[CONFIG.PLANETS.ID_EARTH];
+        const currentPlanet = this.getCurrentPlanet();
 
         // circles and names
         push();
@@ -88,9 +102,9 @@ class PlanetManager {
             stroke(150);
             strokeWeight(0.1);
             noFill();
-            translate(earth.distance, 0);
+            translate(currentPlanet.distance, 0);
             ellipse(0, 0, planet.distance * 2, planet.distance * 2);
-            if (planet.id != CONFIG.PLANETS.ID_EARTH) {
+            if (planet.id != this.getCurrentPlanet().id) {
                 translate(-planet.distance, 0);
                 rotate(-90);
                 fill(`rgba(200, 200, 200, .8)`);
@@ -102,9 +116,9 @@ class PlanetManager {
         pop();
         // draw planets with angle and size
         push();
-        if (planet.id != CONFIG.PLANETS.ID_EARTH) {
-            rotate(-earth.angle);
-            translate(-earth.pos.x, -earth.pos.y);
+        if (planet.id != this.getCurrentPlanet().id) {
+            rotate(-currentPlanet.angle);
+            translate(-currentPlanet.pos.x, -currentPlanet.pos.y);
 
             // OTHER PLANETS
             if (planet.id != CONFIG.PLANETS.ID_SUN) {
@@ -114,5 +128,30 @@ class PlanetManager {
         }
         image(img, -(w / 2), -(h / 2), w, h);
         pop();
+    }
+
+    click(x, y, callback) {
+        // vec is position of cursor, then we apply planet transformation
+        const vec = createVector(x - width / 2, y - height / 2);
+        const currentPlanet = this.getCurrentPlanet();
+        vec.rotate(currentPlanet.angle);
+        const scale = 1 / game_manager.scale;
+        vec.mult(scale);
+        vec.add(
+            parseFloat(currentPlanet.pos.x),
+            parseFloat(currentPlanet.pos.y)
+        );
+
+        const base_size = this.getBasePlanetSize();
+        this.planets.forEach((planet) => {
+            const distance = dist(planet.pos.x, planet.pos.y, vec.x, vec.y);
+            const planet_radius = (base_size * planet.size_ratio) / 2;
+            if (planet.id != currentPlanet.id && distance < planet_radius) {
+                this.idCurrentPlanet = planet.id;
+                if (!!callback) {
+                    callback(planet);
+                }
+            }
+        });
     }
 }
