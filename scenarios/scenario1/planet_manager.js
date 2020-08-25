@@ -14,17 +14,12 @@ class PlanetManager {
     }
 
     loadPlanetsAssets(data) {
-        // load planets json + imgs
-        data.forEach((dplanet) => {
-            this.planets.push(dplanet);
-            this.img_planets.push(
-                loadImage(`assets/planets/${dplanet.id}.png`)
-            );
-        });
+        this.planets = data.planets;
+        this.img_planets = data.img_planets;
     }
 
     getBasePlanetSize() {
-        return height * this.planets[CONFIG.PLANETS.ID_SUN].base_size;
+        return height * this.planets[Scenario1.getConfig().PLANETS.ID_SUN].base_size;
     }
 
     initPlanets() {
@@ -33,7 +28,7 @@ class PlanetManager {
         // init planets at differents starting angles, imcrementing distance
         this.planets.forEach((planet) => {
             const planet_radius = (base_size * planet.size_ratio) / 2;
-            if (planet.id != CONFIG.PLANETS.ID_SUN) {
+            if (planet.id != Scenario1.getConfig().PLANETS.ID_SUN) {
                 distance += planet_radius;
                 planet.angle = parseFloat(random(0, 360).toFixed(2));
             } else {
@@ -55,7 +50,7 @@ class PlanetManager {
     }
 
     updatePlanetPos(planet) {
-        if (planet.id == CONFIG.PLANETS.ID_SUN) {
+        if (planet.id == Scenario1.getConfig().PLANETS.ID_SUN) {
             planet.pos = createVector(0, 0);
             return;
         }
@@ -70,9 +65,9 @@ class PlanetManager {
 
     updatePlanet(planet, updateCallback) {
         // update angle
-        if (planet.id != CONFIG.PLANETS.ID_SUN) {
+        if (planet.id != Scenario1.getConfig().PLANETS.ID_SUN) {
             const planetUpdateAngle = parseFloat(
-                (planet.speed * CONFIG.PLANETS.SPEED_RATIO).toFixed(2)
+                (planet.speed * Scenario1.getConfig().PLANETS.SPEED_RATIO).toFixed(2)
             );
             planet.angle += planetUpdateAngle;
             if (planet.angle >= 360) {
@@ -97,7 +92,7 @@ class PlanetManager {
 
         // circles and names
         push();
-        if (planet.id != CONFIG.PLANETS.ID_SUN) {
+        if (planet.id != Scenario1.getConfig().PLANETS.ID_SUN) {
             stroke(150);
             strokeWeight(0.1);
             noFill();
@@ -120,7 +115,7 @@ class PlanetManager {
             translate(-currentPlanet.pos.x, -currentPlanet.pos.y);
 
             // OTHER PLANETS
-            if (planet.id != CONFIG.PLANETS.ID_SUN) {
+            if (planet.id != Scenario1.getConfig().PLANETS.ID_SUN) {
                 translate(planet.pos.x, planet.pos.y);
                 rotate(planet.angle);
             }
@@ -129,15 +124,12 @@ class PlanetManager {
         pop();
     }
 
-    click(x, y, callback) {
+    click(x, y, scale, callback) {
         // vec is position of cursor, then we apply planet transformation
         const vec = createVector(x - width / 2, y - height / 2);
         const currentPlanet = this.getCurrentPlanet();
-        if (height > width) {
-            vec.rotate(-90);
-        }
         vec.rotate(currentPlanet.angle);
-        const scale = 1 / game_manager.scale;
+        scale = 1 / scale;
         vec.mult(scale);
         vec.add(
             parseFloat(currentPlanet.pos.x),
