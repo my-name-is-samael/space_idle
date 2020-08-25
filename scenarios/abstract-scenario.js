@@ -54,4 +54,9 @@ class AbstractScenario {
     keyPressed(keyCode){
         // can be implemented
     }
+
+    reset() {
+        // can be implemented but should be called with super
+        this.initOver = false;
+    }
 }

@@ -2,7 +2,6 @@ class GameManager {
     constructor() {
         this.gap;
         this.tf;
-        this.year = 1;
 
         this.background = new Background(Scenario1.getConfig().STARS_AMOUNT);
         this.planet_manager;

@@ -31,6 +31,7 @@ class ScenarioManager {
         }
         if (current.isOver()) {
             const data = current.receivePreviousData();
+            current.reset();
             if (!!this.scenarios[this.currentScenarioIndex + 1]) {
                 this.currentScenarioIndex++;
             } else if (CONFIG.DO_LOOP) {
