@@ -52,7 +52,7 @@ class Scenario1 extends AbstractScenario {
                 SPEED_RATIO: 0.3,
                 DETECTION_RANGE: 1.01,
             },
-            STARS_AMOUNT: 300,
+            STARS_AMOUNT: 500,
         };
     }
 
