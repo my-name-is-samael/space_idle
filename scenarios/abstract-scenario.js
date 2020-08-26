@@ -40,7 +40,8 @@ class AbstractScenario {
     }
 
     canvasSizeUpdated() {
-        throw new TypeError("AbstractScenario.canvasSizeUpdated must be implemented");
+        // can be implemented but should be called with super
+        resizeCanvas(windowWidth, windowHeight);
     }
 
     click(x, y) {
@@ -51,7 +52,7 @@ class AbstractScenario {
         // can be implemented
     }
 
-    keyPressed(keyCode){
+    keyPressed(keyCode) {
         // can be implemented
     }
 

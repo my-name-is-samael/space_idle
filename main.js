@@ -5,6 +5,7 @@ function preload() {
 function setup() {
     createCanvas(0, 0);
     frameRate(CONFIG.FRAMERATE);
+    scenario_manager.init();
 }
 
 function windowResized() {

@@ -15,8 +15,6 @@ class GameManager {
     }
 
     init(planets_data) {
-        this.updateDisplay();
-
         this.background.initStars();
         this.gap = width * Scenario1.getConfig().PLANETS.GAP_RATIO;
 
@@ -33,13 +31,11 @@ class GameManager {
         fill(255);
     }
 
-    updateDisplay() {
-        resizeCanvas(windowWidth, windowHeight);
-    }
-
     draw() {
         background(0);
-        this.background.updateAndDrawStars(this.planet_manager.getCurrentPlanet());
+        this.background.updateAndDrawStars(
+            this.planet_manager.getCurrentPlanet()
+        );
         if (!this.planet_manager.loaded) {
             fill(255);
             textSize(width / 20);

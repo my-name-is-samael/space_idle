@@ -8,6 +8,10 @@ class ScenarioManager {
         this.currentScenarioIndex = 0;
     }
 
+    init() {
+        this.canvasSizeUpdated();
+    }
+
     getCurrentScenario() {
         return this.scenarios[this.currentScenarioIndex];
     }
@@ -35,7 +39,7 @@ class ScenarioManager {
             if (!!this.scenarios[this.currentScenarioIndex + 1]) {
                 this.currentScenarioIndex++;
             } else if (CONFIG.DO_LOOP) {
-                this.initCurrentScenarioIndex();
+                this.currentScenarioIndex = 0;
             }
             const next = this.getCurrentScenario();
             if (!!data) {

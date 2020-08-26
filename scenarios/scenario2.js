@@ -6,7 +6,7 @@ class Scenario2 extends AbstractScenario {
     }
 
     canvasSizeUpdated() {
-        resizeCanvas(windowWidth, windowHeight);
+        super.canvasSizeUpdated();
         this.init();
     }
 
@@ -19,7 +19,7 @@ class Scenario2 extends AbstractScenario {
             STARS_AMOUNT: 200,
             SPEED: 1,
             TRAIL_MAX_LENGTH: 3,
-            SCENARIO_LENGTH: 5*CONFIG.FRAMERATE,
+            SCENARIO_LENGTH: 5 * CONFIG.FRAMERATE,
         };
     }
 
@@ -35,6 +35,10 @@ class Scenario2 extends AbstractScenario {
             star.rotate(floor(random(360)));
             star.mult(random(hypotenuse));
             star.trail = [];
+            star.color =
+                random() < 0.01
+                    ? random(["red", "blue", "purple", "yellow"])
+                    : 150;
             this.stars.push(star);
         }
         this.initOver = true;
@@ -49,7 +53,6 @@ class Scenario2 extends AbstractScenario {
         background(0);
         push();
         translate(width / 2, height / 2);
-        stroke('rgba(255, 255, 255, .5)');
         this.stars.forEach((star) => {
             star.trail.unshift(createVector(star.x, star.y));
             if (star.trail.length >= Scenario2.getConfig().TRAIL_MAX_LENGTH) {
@@ -57,11 +60,11 @@ class Scenario2 extends AbstractScenario {
             }
             star.trail.forEach((trail, tab, index) => {
                 let origin = createVector(star.x, star.y);
-                if(index > 0){
-                    const previous = tab[index-1];
+                if (index > 0) {
+                    const previous = tab[index - 1];
                     origin = createVector(previous.x, previous.y);
                 }
-                strokeWeight(this.getStarSize(trail)*.75);
+                strokeWeight(this.getStarSize(trail) * 0.75);
                 line(origin.x, origin.y, trail.x, trail.y);
             });
 
@@ -73,13 +76,14 @@ class Scenario2 extends AbstractScenario {
                 star.rotate(angle);
                 star.trail = [];
             }
+            stroke(star.color);
             strokeWeight(this.getStarSize(star));
             point(star.x, star.y);
         });
         pop();
         this.currentLength++;
     }
-    
+
     reset() {
         super.reset();
         this.currentLength = 0;

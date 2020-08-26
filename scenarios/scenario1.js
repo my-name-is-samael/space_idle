@@ -25,7 +25,7 @@ class Scenario1 extends AbstractScenario {
     }
 
     canvasSizeUpdated() {
-        this.game_manager.updateDisplay();
+        resizeCanvas(windowWidth, windowHeight);
     }
 
     isOver() {
@@ -51,14 +51,14 @@ class Scenario1 extends AbstractScenario {
     init() {
         if (!this.loadClassesStart) {
             this.loadClassesStart = true;
-            $.when(
-                $.getScript("scenarios/scenario1/background.js"),
-                $.getScript("scenarios/scenario1/planet_manager.js"),
-                $.getScript("scenarios/scenario1/game_manager.js"),
-                $.Deferred((deferred) => {
-                    $(deferred.resolve);
-                })
-            ).done(() => {
+            const scriptsToLoad = [];
+            if(typeof Background !== "function") scriptsToLoad.push($.getScript("scenarios/scenario1/background.js"));
+            if(typeof PlanetManager !== "function") scriptsToLoad.push($.getScript("scenarios/scenario1/planet_manager.js"));
+            if(typeof GameManager !== "function") scriptsToLoad.push($.getScript("scenarios/scenario1/game_manager.js"));
+            scriptsToLoad.push($.Deferred((deferred) => {
+                $(deferred.resolve);
+            }));
+            $.when(...scriptsToLoad).done(() => {
                 this.game_manager = new GameManager();
                 this.game_manager.init(this.planets_data);
                 this.initOver = true;
@@ -74,6 +74,12 @@ class Scenario1 extends AbstractScenario {
     update() {
         if (!!this.game_manager) {
             this.game_manager.draw();
+            
+            const planets = this.game_manager.planet_manager.planets;
+            const w = map(planets[planets.length-1].angle, 0, 360, 0, width);
+            noStroke();
+            fill(255);
+            rect(0, height-5, w, height);
         }
     }
 

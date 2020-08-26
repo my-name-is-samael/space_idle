@@ -28,6 +28,7 @@ class Background {
     }
 
     updateAndDrawStars(currentPlanet) {
+        // TODO make component generic
         // move and draw stars
         this.starsAngle += Scenario1.getConfig().PLANETS.SPEED_RATIO * 0.05;
         push();

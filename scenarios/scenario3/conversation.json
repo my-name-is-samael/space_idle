@@ -1,0 +1,74 @@
+[
+    {
+        "id": 0,
+        "text": "Bonjour étranger !"
+    },
+    {
+        "id": 1,
+        "id_parent": 0,
+        "text": "Vous avez fait une entrée fulgurante dans notre espace aérien..."
+    },
+    {
+        "id": 2,
+        "id_parent": 1,
+        "text": "Donnez nous les plans de votre technologie d'hyperpropulsion et nous vous laisserons partir sans douleur !"
+    },
+    {
+        "id": 3,
+        "id_parent": 2,
+        "choices": [
+            {
+                "id": 4,
+                "text": "Je ne veux pas mourir. Prenez tout !"
+            },
+            {
+                "id": 5,
+                "text": "On peut peut-être trouver un arrangement"
+            },
+            {
+                "id": 6,
+                "text": "Plutôt mourir"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "id_parent": 4,
+        "text": "Ce n'était qu'un simple test..."
+    },
+    {
+        "id": 8,
+        "id_parent": 7,
+        "text": "Bienvenue dans la confrérie galactique !"
+    },
+    {
+        "id": 9,
+        "id_parent": 5,
+        "text": "Quel serait notre intérêt à marchander avec une créature inférieure ?"
+    },
+    {
+        "id": 10,
+        "id_parent": 9,
+        "text": "Déguerpissez et priez pour qu'on ne vous rende pas de petite visite inopinée..."
+    },
+    {
+        "id": 11,
+        "id_parent": 6,
+        "text": "Vous devriez vous y préparer..."
+    },
+    {
+        "id": 12,
+        "id_parent": 11,
+        "text": "Rendez-vous dans une autre vie, étranger !"
+    },
+    {
+        "id": 13,
+        "id_parent": 12,
+        "choices": [
+            {
+                "id": 14,
+                "text": "Fuir"
+            }
+        ]
+    }
+]

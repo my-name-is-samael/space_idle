@@ -26,11 +26,16 @@ class PlanetManager {
         let distance = 0;
         const base_size = this.getBasePlanetSize();
         // init planets at differents starting angles, imcrementing distance
-        this.planets.forEach((planet) => {
+        this.planets.forEach((planet, index) => {
             const planet_radius = (base_size * planet.size_ratio) / 2;
             if (planet.id != Scenario1.getConfig().PLANETS.ID_SUN) {
                 distance += planet_radius;
-                planet.angle = parseFloat(random(0, 360).toFixed(2));
+                // Hello there
+                if (index == this.planets.length-1) {
+                    planet.angle = parseFloat(random(0, 180).toFixed(2));
+                } else {
+                    planet.angle = parseFloat(random(0, 360).toFixed(2));
+                }
             } else {
                 planet.angle = 0;
             }
